@@ -18,8 +18,9 @@ A web application that fetches data from an AWS S3 bucket and displays it, with 
     ```bash
     pip install -r requirements.txt
     ```
-
-3. Run the application:
+3. Create the .env file and fill the keys
+   
+4. Run the application:
     ```bash
     python app.py
     ```
