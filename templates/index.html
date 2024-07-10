@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Sun</title>
+    <script>
+        function saveTimezone() {
+            var timezone = document.getElementById("timezone").value;
+            localStorage.setItem("selectedTimezone", timezone);
+        }
+
+        function loadTimezone() {
+            var timezone = localStorage.getItem("selectedTimezone");
+            if (!timezone) {
+                timezone = 'UTC';
+                localStorage.setItem("selectedTimezone", timezone);
+            }
+            document.getElementById("timezone").value = timezone;
+            convertTimezone('time');
+        }
+
+        function convertTimezone(timeElements) {
+            var timezone = document.getElementById("timezone").value;
+            var elements = document.getElementsByClassName(timeElements);
+            for (var i = 0; i < elements.length; i++) {
+                var currentElement = elements[i];
+                var date = new Date(currentElement.getAttribute('data-utc').trim() + ' UTC');
+                var options = { timeZone: timezone, timeZoneName: 'short' };
+                currentElement.textContent = date.toLocaleString('en-US', options);
+            }
+            saveTimezone();
+        }
+
+        window.onload = loadTimezone;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Trade Sun</h1>
+        <label for="timezone">Select Timezone:</label>
+        <select id="timezone" onchange="convertTimezone('time')">
+            {% for tz in timezones %}
+            <option value="{{ tz }}">{{ tz }}</option>
+            {% endfor %}
+            <option value="Asia/Kolkata">India Standard Time (IST)</option>
+        </select>
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if data[0] == "No data available" %}
+                <tr>
+                    <td>{{ data[0] }}</td>
+                </tr>
+                {% else %}
+                {% for row in data %}
+                <tr>
+                    <td class="time" data-utc="{{ row }}">{{ row }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
